@@ -17,8 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Input;
-
-
+using System.Windows.Media.Animation;
 
 public class Node : IComparer <Node> {
 	public string Name { get; set; }
@@ -99,13 +98,21 @@ class MainClass
 		w.ShowAll ();
 
 		
-		Canvas c = new TreemapRenderer (n, new Rect (10, 10, width-20, height-20), "");
-		c.Width = width;
-		c.Height = height;
-		h.Application.RootVisual = c;
+		Canvas container = new Canvas (){
+			Width = width,
+			Height = height,
+			Background = new SolidColorBrush (Color.FromArgb (255, 0x4c, 0x4c, 0x4c))
+		};
+			
+		Canvas c = new TreemapRenderer (n, new Rect (0, 0, width - 20, height - 20), "");
+		Canvas.SetTop (c, 10);
+		Canvas.SetLeft (c, 10);
+		container.Children.Add (c);
 		
+		h.Application.RootVisual = container;
 		Gtk.Application.Run ();
 	}
+	
 	static void DumpNode (Node n, int indent)
 	{
 		for (int i = 0; i < indent; i++)
@@ -176,6 +183,8 @@ public class TreemapRenderer : Canvas {
 	
 	public TreemapRenderer (Node source, Rect region, string caption)
 	{
+		Width = region.Width;
+		Height = region.Height;
 		Console.WriteLine ("Treemap for {0}", source.Children.Count);
 		this.root = source.Clone ();
 		this.region = region;
@@ -229,7 +238,6 @@ public class TreemapRenderer : Canvas {
 	const int PADY = 3;
 	
 	void Plot (List<Node> children)
-
 	{
 		Random r = new Random (10);
 		
@@ -337,6 +345,57 @@ public class TreemapRenderer : Canvas {
 		c.Width = region.Width;
 		c.Height = region.Height;
 
+		var xlate = new TranslateTransform () {
+					X = n.Rect.X,
+					Y = n.Rect.Y };
+		
+		var scale = new ScaleTransform () {
+					ScaleX = n.Rect.Width / region.Width,
+					ScaleY = n.Rect.Height / region.Height };
+
+		c.RenderTransform = new TransformGroup { Children = { scale, xlate } };
+		c.Opacity = 0.5;
+		
+		// Animations
+		TimeSpan t = TimeSpan.FromSeconds (0.3);
+		
+		var anim_x = new DoubleAnimation () {
+			Duration = t,
+			To = 0 }; 
+		var anim_y = new DoubleAnimation () {
+			Duration = t,
+			To = 0 }; 
+		var anim_sx = new DoubleAnimation (){
+			Duration = t,
+			To = 1.0 };
+		var anim_sy = new DoubleAnimation (){
+			Duration = t,
+			To = 1.0 };
+		var anim_opacity = new DoubleAnimation () {
+			Duration = t,
+			To = 1.0 };
+		var anim_opacity_parent = new DoubleAnimation () {
+			Duration = t,
+			From = 1.0,
+			To = 0.0 };
+		
+		Storyboard.SetTarget (anim_x, xlate);
+		Storyboard.SetTargetProperty (anim_x, new PropertyPath ("X"));
+		Storyboard.SetTarget (anim_y, xlate);
+		Storyboard.SetTargetProperty (anim_y, new PropertyPath ("Y"));
+		Storyboard.SetTarget (anim_sx, scale);
+		Storyboard.SetTargetProperty (anim_sx, new PropertyPath ("ScaleX"));
+		Storyboard.SetTarget (anim_sy, scale);
+		Storyboard.SetTargetProperty (anim_sy, new PropertyPath ("ScaleY"));
+		Storyboard.SetTarget (anim_opacity, c);
+		Storyboard.SetTargetProperty (anim_opacity, new PropertyPath ("Opacity"));
+
+		var s = new Storyboard () { Children = { anim_x, anim_y, anim_sx, anim_sy, anim_opacity }};
+
+		s.Begin ();
+		
+		
+		
 		c.MouseRightButtonUp += delegate (object sender, MouseButtonEventArgs e){
 			e.Handled = true;
 			Console.WriteLine ("Up");

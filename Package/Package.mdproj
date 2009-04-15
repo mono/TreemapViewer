@@ -6,7 +6,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A544EFB5-E3B7-436C-8DA4-2F2791093174}</ProjectGuid>
     <Packages>
-      <Packages xmlns="">
+      <Packages>
         <Package name="Mono Makefile Sources">
           <Builder targetFile="..\TreemapViewer-.tar.gz" format="MonoDevelop.Projects.FileFormat" ctype="SourcesZipPackageBuilder">
             <ChildEntries>
