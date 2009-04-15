@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ItemType>PackagingProject</ItemType>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A544EFB5-E3B7-436C-8DA4-2F2791093174}</ProjectGuid>
+    <Packages>
+      <Packages xmlns="">
+        <Package name="Mono Makefile Sources">
+          <Builder targetFile="..\TreemapViewer-.tar.gz" format="MonoDevelop.Projects.FileFormat" ctype="SourcesZipPackageBuilder">
+            <ChildEntries>
+              <SolutionItemReference path="..\SizeDumper\TreemapViewer.csproj" />
+            </ChildEntries>
+            <RootEntry path="..\TreemapViewer.sln" id="{E1B34A70-D61B-4F8B-85B2-C2018A30AF84}" />
+          </Builder>
+        </Package>
+        <Package name="Tarball">
+          <Builder TargetDirectory="/home/miguel/Projects/SizeDumper" ctype="TarballDeployTarget">
+            <ChildEntries>
+              <SolutionItemReference path="..\SizeDumper\TreemapViewer.csproj" />
+            </ChildEntries>
+            <RootEntry path="..\TreemapViewer.sln" id="{E1B34A70-D61B-4F8B-85B2-C2018A30AF84}" />
+          </Builder>
+        </Package>
+      </Packages>
+    </Packages>
+  </PropertyGroup>
+</Project>
