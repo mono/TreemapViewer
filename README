@@ -1,0 +1,8 @@
+To use this you first need to genereate the data to load.  Build the
+solution, and then do:
+
+    mono generator/bin/Debug/generator.exe > all-profiles.xml
+
+Then you can visualize it:
+
+     mono TreemapViewer/bin/Debug/TreemapViewer.exe all-profiles.xml
