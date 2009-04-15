@@ -5,12 +5,24 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreemapViewer", "TreemapVie
 EndProject
 Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Package", "Package\Package.mdproj", "{A544EFB5-E3B7-436C-8DA4-2F2791093174}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "generator", "generator\generator.csproj", "{4465A80F-88EF-4F4F-B845-711DFAAB51DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Treemap", "Treemap\Treemap.csproj", "{0B7E650E-349E-4ABB-B385-25023A814714}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B7E650E-349E-4ABB-B385-25023A814714}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B7E650E-349E-4ABB-B385-25023A814714}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B7E650E-349E-4ABB-B385-25023A814714}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B7E650E-349E-4ABB-B385-25023A814714}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4465A80F-88EF-4F4F-B845-711DFAAB51DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4465A80F-88EF-4F4F-B845-711DFAAB51DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4465A80F-88EF-4F4F-B845-711DFAAB51DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4465A80F-88EF-4F4F-B845-711DFAAB51DE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A544EFB5-E3B7-436C-8DA4-2F2791093174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A544EFB5-E3B7-436C-8DA4-2F2791093174}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A544EFB5-E3B7-436C-8DA4-2F2791093174}.Release|Any CPU.ActiveCfg = Release|Any CPU

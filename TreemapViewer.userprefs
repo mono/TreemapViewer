@@ -8,11 +8,9 @@
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Package" expanded="True">
-            <Node name="Mono Makefile Sources" selected="True" />
+            <Node name="Unknown file format: /home/miguel/Projects/TreemapViewer/Package/Package.mdproj" selected="True" />
           </Node>
-          <Node name="TreemapViewer" expanded="True">
-            <Node name="References" expanded="True" />
-          </Node>
+          <Node name="TreemapViewer" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">
