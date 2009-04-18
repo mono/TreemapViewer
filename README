@@ -16,7 +16,7 @@ edition.
 * On Linux/Moonlight
 
 To use this you first need to genereate the data to load.  Build the
-solution, and then do:
+TreemapViewer.sln solution, and then do:
 
     mono generator/bin/Debug/generator.exe > all-profiles.xml
 
