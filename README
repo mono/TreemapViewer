@@ -1,3 +1,20 @@
+
+The visualizer contains two solutions: one for Linux for a native
+Gtk#/Moonlight application and one for Windows for a Silverlight/Web
+edition.
+
+* On Windows/Silverlight
+
+	Open the VisualStudio solution with Visual Studio 2008
+
+	Build the generator project, and then run from the shell:
+
+		generator someassembly.dll > SilverlightViewer.Web/mscorlib.xml	
+
+	Then start it up
+
+* On Linux/Moonlight
+
 To use this you first need to genereate the data to load.  Build the
 solution, and then do:
 
