@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="SilverlightViewer.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    >
+    <Grid x:Name="grdLayoutRoot" Background="White" ShowGridLines="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="BackButton" Width="50" Height="30" Content="Go Back" Grid.Row="0" Grid.Column="0"></Button>
+        <Canvas x:Name="CanvasHost" Grid.Row="1" Grid.Column="1" Width="1024" Height="800"/>
+    </Grid>    
+</UserControl>
