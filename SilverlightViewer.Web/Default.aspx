@@ -9,7 +9,7 @@
 <body>
     <form id="form1" runat="server">
     <div>
-    
+    <a href="SilverlightViewerTestPage.aspx">here</a>
     </div>
     </form>
 </body>

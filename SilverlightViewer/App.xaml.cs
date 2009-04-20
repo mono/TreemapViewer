@@ -86,10 +86,15 @@ namespace SilverlightViewer
             while (n.Children.Count == 1)
                 n = n.Children[0];
 
-            Canvas c = main.CanvasHost;
-            treemap = new TreemapRenderer(n, new Rect(0, 0, c.Width, c.Height), "");
+            treemap = new TreemapRenderer(n, "");
+            Grid.SetColumn(treemap, 0);
+            Grid.SetRow(treemap, 1);
+            main.grid.Children.Add(treemap);
+        }
 
-            main.CanvasHost.Children.Add(treemap);
+        void main_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)

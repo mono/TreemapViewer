@@ -51,24 +51,17 @@ class MainClass
 		w.Add (h);
 		w.ShowAll ();
 
-		
-		Canvas container = new Canvas (){
-			Width = width,
-			Height = height,
-			Background = new SolidColorBrush (Color.FromArgb (255, 0x4c, 0x4c, 0x4c))
-		};
-		
 		// Make it pretty, skip all levels that are just 1 element
 		while (n.Children.Count == 1)
 			n = n.Children [0];
 		
 		// Render
-		Canvas c = new TreemapRenderer (n, new Rect (0, 0, width - 20, height - 20), "");
-		Canvas.SetTop (c, 10);
-		Canvas.SetLeft (c, 10);
-		container.Children.Add (c);
+		TreemapRenderer r = new TreemapRenderer (n, "");
+		Size available = new Size (width, height);
+		r.Measure (available);
+		r.Arrange (new Rect (0, 0, width, height));
 		
-		h.Application.RootVisual = container;
+		h.Application.RootVisual = r;
 		Gtk.Application.Run ();
 	}
 	

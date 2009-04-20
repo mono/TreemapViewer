@@ -3,14 +3,17 @@
   <MonoDevelop.Ide.DebuggingService>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService>
-  <MonoDevelop.Ide.Workbench ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="TreemapViewer/Main.cs" ctype="Workbench">
+    <Files>
+      <File FileName="TreemapViewer/Main.cs" Line="62" Column="46" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Package" expanded="True">
-            <Node name="Unknown file format: /home/miguel/Projects/TreemapViewer/Package/Package.mdproj" selected="True" />
+          <Node name="Package" expanded="True" />
+          <Node name="TreemapViewer" expanded="True">
+            <Node name="Main.cs" selected="True" />
           </Node>
-          <Node name="TreemapViewer" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">

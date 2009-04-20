@@ -59,35 +59,73 @@ namespace Moonlight {
 				 
 	}
 }
-
-	public class TreemapRenderer : Canvas {
+    public class TreemapRenderer : UserControl {
 		Node root;
-		Rect region;
 		string caption;
-		
+        Rect region;
+
 		Brush borderBrush = new SolidColorBrush (Colors.White);
 		Brush backgroundBrush = new SolidColorBrush (Color.FromArgb (0xff, 0x4c, 0x4c, 0x4c));
-		Brush transparentBrush = new SolidColorBrush (Colors.Transparent);
-		
-		public TreemapRenderer (Node source, Rect region, string caption)
+        Brush transparentBrush = new SolidColorBrush (Colors.Transparent);
+        Canvas content;
+        TreemapRenderer activeChild;
+
+		public TreemapRenderer (Node source, string caption)
 		{
-			Width = region.Width;
-			Height = region.Height;
-			Console.WriteLine ("Treemap for {0}", source.Children.Count);
+
 			this.root = source.Clone ();
-			this.region = region;
-			this.Background = backgroundBrush;
 			this.caption = caption;
 			
 			Sort (root);
-			
-			SetRegion (region);
+
+            content = new Canvas () {
+                Background = backgroundBrush
+            };
+
+            Content = content;
 		}
-		
-		public void SetRegion (Rect region)
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            base.MeasureOverride (availableSize);
+            var c = Application.Current.Host.Content;
+
+            return new Size(
+                Math.Min(c.ActualWidth, availableSize.Width),
+                Math.Min(c.ActualHeight, availableSize.Height));
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            base.ArrangeOverride (finalSize);
+            content.Width = finalSize.Width;
+            content.Height = finalSize.Height;
+
+            Rect newRegion = new Rect (0, 0, finalSize.Width, finalSize.Height);
+            if (newRegion != region && newRegion.Width > 0 && newRegion.Height > 0) {
+                TreemapRenderer t = this, child;
+                
+                while (true){
+                    child = t.activeChild;
+                    if (child == null){
+                        t.SetRegion (newRegion);
+                        break;
+                    }
+                    t = child;
+                }
+            }
+
+            return finalSize;
+        
+        }
+
+		public void SetRegion (Rect newRegion)
 		{
-			Children.Clear ();
-			
+            region = newRegion;
+			content.Children.Clear ();
+            content.Width = region.Width;
+            content.Height = region.Height;
+
 			if (caption != ""){
 				int max;
 				string formatted = MakeCaption (caption, out max);
@@ -97,25 +135,14 @@ namespace Moonlight {
 				var text = new TextBlock () {
 					FontSize = s,
 					Text = formatted,
-					Foreground = new SolidColorBrush (Colors.Gray)
+					Foreground = new SolidColorBrush (Color.FromArgb (255, 0x5c, 0x5c, 0x5c))
 				};
-				SetTop (text, (region.Height-text.ActualHeight)/2);
-				SetLeft (text, (region.Width-text.ActualWidth)/2);
-				Children.Add (text);
+                
+                Canvas.SetTop (text, (region.Height-text.ActualHeight)/2);
+				Canvas.SetLeft (text, (region.Width-text.ActualWidth)/2);
+				content.Children.Add (text);
 			}
-			
-			var border = new Rectangle () { 
-				Width = region.Width, 
-				Height = region.Height, 
-				Stroke = borderBrush,
-				Opacity = 1.0,
-				StrokeThickness = 1
-			};
-			
-			Canvas.SetLeft (border, region.X);
-			Canvas.SetTop (border, region.Y);
-			Children.Add (border);
-					
+		
 			Rect emptyArea = region;
 			Squarify (emptyArea, root.Children);
 			
@@ -132,11 +159,11 @@ namespace Moonlight {
 				
 				host.Width = child.Rect.Width;
 				host.Height = child.Rect.Height;
-				SetLeft (host, child.Rect.X);
-				SetTop (host, child.Rect.Y);
-				host.Background = transparentBrush;
+				Canvas.SetLeft (host, child.Rect.X);
+				Canvas.SetTop (host, child.Rect.Y);
+                host.Background = transparentBrush;
 				                                                       
-				Children.Add (host);	
+				content.Children.Add (host);	
 				
 				// Create box + other stuff
 				
@@ -174,8 +201,8 @@ namespace Moonlight {
 						text.FontSize = text.FontSize / 2;
 					}
 	
-					SetTop (text, (child.Rect.Height - text.ActualHeight)/2);
-					SetLeft (text, (child.Rect.Width - text.ActualWidth)/2);
+					Canvas.SetTop (text, (child.Rect.Height - text.ActualHeight)/2);
+					Canvas.SetLeft (text, (child.Rect.Width - text.ActualWidth)/2);
 					host.Children.Add (text);
 				}
 	
@@ -188,7 +215,7 @@ namespace Moonlight {
 				};
 				
 				host.MouseLeave += delegate {
-					host.Background = transparentBrush;
+                    host.Background = transparentBrush;
 					if (text != null)
 						text.Foreground = borderBrush;
 					inside = false;
@@ -233,14 +260,16 @@ namespace Moonlight {
 			return animation;
 		}
 
-        Stack<Canvas> frames = new Stack<Canvas>();
+        Stack<TreemapRenderer> frames = new Stack<TreemapRenderer>();
 
 		// Render a child
 		void Clicked (Node n)
 		{
-			Canvas c = new TreemapRenderer (n, region, n.Name);
-			c.Width = region.Width;
-			c.Height = region.Height;
+			TreemapRenderer c = new TreemapRenderer (n, n.Name);
+
+            Size ns = new Size(region.Width, region.Height);
+            c.Measure (ns);
+            c.Arrange(region);
 	
 			var xlate = new TranslateTransform () {
 						X = n.Rect.X,
@@ -252,10 +281,12 @@ namespace Moonlight {
 	
 			c.RenderTransform = new TransformGroup { Children = { scale, xlate } };
 			c.Opacity = 0.5;
+            content.Children.Add (c);
+            activeChild = c;
 			
 			// Animations
 			TimeSpan time = TimeSpan.FromSeconds (0.3);
-			
+
 			var s = new Storyboard () {
 				Children = {
 					Animate (time, xlate, "X", 0),
@@ -266,22 +297,26 @@ namespace Moonlight {
 				}};
 			
 			s.Begin ();
-			
-#if false
-			c.MouseRightButtonUp += delegate (object sender, MouseButtonEventArgs e){
-				e.Handled = true;
-				Children.Remove (c);
-			};
-#endif
-            frames.Push(c);
-			Children.Add (c);
 		}
 
         public void Back()
         {
-            if (frames.Count == 0)
-                return;
-            Children.Remove(frames.Pop());
+            TreemapRenderer last = this, child = activeChild;
+
+            while (child != null && child.activeChild != null) {
+                last = child;
+                child = child.activeChild;
+            }
+            if (child != null) {
+                Rect childRegion = child.region;
+                
+                last.content.Children.Remove (child);
+                last.activeChild = null;
+
+                // In case layout changed while we were rendering the child
+                if (childRegion != region)
+                    SetRegion (childRegion);
+            }
         }
 
 		static string MakeCaption (string s, out int max)
