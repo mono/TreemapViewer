@@ -1,5 +1,9 @@
 2009-07-28  Jb Evain  <jbevain@novell.com>
 
+	* Main.cs: adjust the size of the treemap when the window is resized.
+
+2009-07-28  Jb Evain  <jbevain@novell.com>
+
 	* Main.cs: Go back if the user pressed the back key.
 
 (Main): Use a new container to set the border

@@ -63,12 +63,25 @@ class MainClass
 				r.Back ();
 		};
 		
+		SetSize (r, width, height);
+		
+		h.Application.RootVisual = r;
+		
+		w.ResizeChecked += delegate(object sender, EventArgs e) {
+			int new_width, new_heigth;
+			w.GetSize (out new_width, out new_heigth);
+			
+			SetSize (r, new_width, new_heigth);;
+		};
+		
+		Gtk.Application.Run ();
+	}
+	
+	static void SetSize (TreemapRenderer r, int width, int height)
+	{
 		Size available = new Size (width, height);
 		r.Measure (available);
 		r.Arrange (new Rect (0, 0, width, height));
-		
-		h.Application.RootVisual = r;
-		Gtk.Application.Run ();
 	}
 	
 	static void DumpNode (Node n, int indent)
