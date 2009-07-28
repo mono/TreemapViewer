@@ -71,12 +71,22 @@ class Generator
 		              select LoadAssembly (d));
 	}
 	
-	public static string GetNamespace (TypeDefinition type)
+	public static string GetNamespace (TypeReference type)
 	{
-		if (type.Namespace == "")
+		if (type.IsNested)
+			return GetNamespace (type.DeclaringType);
+		else if (type.Namespace == "")
 			return "<root>";
 		else 
 			return type.Namespace;
+	}
+
+	public static string GetName (TypeReference type)
+	{
+		if (type.IsNested)
+			return GetName (type.DeclaringType) + "+" + type.Name;
+
+		return type.Name;
 	}
 	
 	public static XElement LoadAssembly (string s)
@@ -105,7 +115,7 @@ class Generator
 			}
 	
 			foreach (TypeDefinition type in module.Types){
-				XElement xtype = new XElement ("Node", new XAttribute ("Name", type.Name));
+				XElement xtype = new XElement ("Node", new XAttribute ("Name", GetName (type)));
 				XElement xnamespace = namespaces [GetNamespace (type)];
 				
 				xnamespace.Add (xtype);
