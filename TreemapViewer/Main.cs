@@ -46,12 +46,6 @@ class MainClass
 			Gtk.Application.Quit ();
 		};
 		
-		w.KeyPressEvent += delegate (object o, Gtk.KeyPressEventArgs ea) {
-			Console.WriteLine ("pan");
-			Console.WriteLine (ea.Args);
-			Console.WriteLine (ea.RetVal);
-		};
-		
 		w.SetSizeRequest (width, height);
 		MoonlightHost h = new MoonlightHost ();
 
