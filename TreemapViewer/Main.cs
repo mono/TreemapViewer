@@ -13,6 +13,7 @@ using Moonlight.Gtk;
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using Moonlight;
 
@@ -34,7 +35,6 @@ class MainClass
 		} catch {
 			Console.WriteLine ("Unable to load {0}", args [0]);
 			throw;
-			return;
 		}
 		
 		Gtk.Application.Init ();
@@ -46,8 +46,15 @@ class MainClass
 			Gtk.Application.Quit ();
 		};
 		
+		w.KeyPressEvent += delegate (object o, Gtk.KeyPressEventArgs ea) {
+			Console.WriteLine ("pan");
+			Console.WriteLine (ea.Args);
+			Console.WriteLine (ea.RetVal);
+		};
+		
 		w.SetSizeRequest (width, height);
 		MoonlightHost h = new MoonlightHost ();
+
 		w.Add (h);
 		w.ShowAll ();
 
@@ -57,6 +64,11 @@ class MainClass
 		
 		// Render
 		TreemapRenderer r = new TreemapRenderer (n, "");
+		r.KeyDown += delegate (object sender, KeyEventArgs e) {
+			if (e.Key == Key.Back)
+				r.Back ();
+		};
+		
 		Size available = new Size (width, height);
 		r.Measure (available);
 		r.Arrange (new Rect (0, 0, width, height));
