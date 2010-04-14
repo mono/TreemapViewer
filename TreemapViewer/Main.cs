@@ -41,6 +41,7 @@ class MainClass
 		MoonlightRuntime.Init ();
 		
 		Gtk.Window w = new Gtk.Window ("Foo");
+		var v = new Gtk.VBox (false, 0);
 		
 		w.DeleteEvent += delegate { 
 			Gtk.Application.Quit ();
@@ -49,7 +50,11 @@ class MainClass
 		w.SetSizeRequest (width, height);
 		MoonlightHost h = new MoonlightHost ();
 
-		w.Add (h);
+		v.PackStart (h, true, true, 0);
+		var back = new Gtk.Button ("Back");
+		v.PackStart (back, false, false, 0);
+		w.Add (v);
+		
 		w.ShowAll ();
 
 		// Make it pretty, skip all levels that are just 1 element
@@ -61,6 +66,10 @@ class MainClass
 		r.KeyDown += delegate (object sender, KeyEventArgs e) {
 			if (e.Key == Key.Back)
 				r.Back ();
+		};
+
+		back.Clicked += delegate {
+			r.Back ();
 		};
 		
 		SetSize (r, width, height);
