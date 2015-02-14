@@ -18,12 +18,15 @@ class Generator
 		
 		Environment.Exit (0);
 	}
+
+	static TextWriter writer;
 	
 	public static void Main(string[] args)
 	{
 		string assembly = null;
 		string output = null;
 		string directory = null;
+		bool json = true;
 		
 		OptionSet os = null;
 		
@@ -31,9 +34,12 @@ class Generator
 			{ "h|?|help", v => ShowHelp (os) },
 			{ "a=|assembly=", v => assembly = v },
 			{ "d=|directory=", v => directory = v },
+			{ "xml", v => json = false },
+			{ "json", v => json = true },
 			{ "o=", v => output = v }
 		};
 		os.Parse (args);
+		assembly = "/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/lib/mono/2.1/mscorlib.dll";
 		
 		XDocument x = new XDocument ();
 		XElement root = new XElement ("Root");
@@ -46,10 +52,13 @@ class Generator
 		} else {
 			string d = Path.Combine (Path.GetDirectoryName (typeof (int).Assembly.CodeBase), "..").Substring (5);
 			
-			root.Add (LoadProfile (d + "/1.0", "1_0_Libs"));
-			root.Add (LoadProfile (d + "/2.0", "3_5_Libs"));
-			root.Add (LoadProfile (d + "/2.1", "Silverlight"));
-			root.Add (LoadProfile (d + "/gtk-sharp-2.0", "Gtk# 2_0"));
+			root.Add (LoadProfile (d + "/4.0", "4_00_Libs"));
+		}
+
+		if (json){
+			writer = output == null ? Console.Out : File.CreateText (output);
+			DumpAsJson (root);
+			return;
 		}
 		
 		if (output != null){
@@ -59,6 +68,60 @@ class Generator
 		} else 
 			Console.WriteLine (x);
 		
+	}
+
+	static int level;
+	public static void indent ()
+	{
+		for (int i = 0; i < level; i++)
+			writer.Write ("  ");
+	}
+	
+	public static void pn (string fmt, params object [] args)
+	{
+		indent ();
+		if (args.Length == 0)
+			writer.Write (fmt);
+		else
+			writer.Write (fmt, args);
+	}
+
+	public static void p (string fmt, params object [] args)
+	{
+		indent ();
+		if (args.Length == 0)
+			writer.WriteLine (fmt);
+		else
+			writer.WriteLine (fmt, args);
+	}
+	
+	public static void DumpAsJson (XElement root)
+	{
+		bool needComma = false;
+		foreach (var e in root.Elements ()){
+			if (needComma)
+				writer.WriteLine (",");
+			p ("{"); level ++;
+			var s = e.Attribute ("Size");
+			var haveChild = e.Elements ().Count () > 0;
+			
+			p ("\"name\": \"{0}\"{1} ", e.Attribute ("Name").Value, (s != null || haveChild) ? "," : "");
+			if (s != null){
+				p ("\"size\": \"{0}\"{1}", s.Value, haveChild ? "," : "");
+			}
+			if (haveChild){
+				p ("\"children\" : ["); level++;
+				DumpAsJson (e);
+				level--;
+				p ("]");
+			}
+			level--;
+			pn ("}");
+			needComma = true;
+		}
+		writer.WriteLine ();
+		if (level < 0)
+			throw new Exception ();
 	}
 	
 	public static XElement LoadProfile (string directory, string name)
