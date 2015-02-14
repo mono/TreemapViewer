@@ -39,7 +39,6 @@ class Generator
 			{ "o=", v => output = v }
 		};
 		os.Parse (args);
-		assembly = "/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/lib/mono/2.1/mscorlib.dll";
 		
 		XDocument x = new XDocument ();
 		XElement root = new XElement ("Root");
